@@ -1,0 +1,1020 @@
+[
+    {
+        "id": "78f04c1128a4100f",
+        "type": "tab",
+        "label": "ESP32 Temperature Logger",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "196081f0352f3af0",
+        "type": "group",
+        "z": "78f04c1128a4100f",
+        "name": "DOWNLOAD FILE TO CSV",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "e59de277e2f488a3",
+            "6754fdfc83ccf7d5",
+            "270b96a238394039",
+            "db3b739ff69854bd",
+            "778e1dc08be9e496",
+            "807cb2c79a23c984",
+            "e8f4f3e2c9a94c78"
+        ],
+        "x": 74,
+        "y": 839,
+        "w": 952,
+        "h": 182
+    },
+    {
+        "id": "40836f6546617f82",
+        "type": "group",
+        "z": "78f04c1128a4100f",
+        "name": "STORE DATA TO DATABASE",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "e4490a2d78dd322c",
+            "c681dfee683963ac",
+            "bc263a9d365765fb"
+        ],
+        "x": 334,
+        "y": 19,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "5d020af5e95b2f0f",
+        "type": "group",
+        "z": "78f04c1128a4100f",
+        "name": "FILTER TABLE",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "81c40225139934ae",
+            "6813becc9e0d8ec1",
+            "7d2a5a9b8b1ce378",
+            "0731f89226b0feb7",
+            "e9f81cf86ae13e54",
+            "df41d33c64d8a964",
+            "73acbbe2699ca38a",
+            "b44068ca67893d02",
+            "9153142b40625994",
+            "18b09637292ae514",
+            "ef8d591e536f6f75",
+            "a4e69ed96d6da2d6"
+        ],
+        "x": 74,
+        "y": 439,
+        "w": 932,
+        "h": 222
+    },
+    {
+        "id": "e60475206a7c8a84",
+        "type": "group",
+        "z": "78f04c1128a4100f",
+        "name": "HAPUS DATA",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "ed449970653dd819",
+            "cd05144cfc9eba99",
+            "9bf38d8462aab94b",
+            "50403f5c993954e2"
+        ],
+        "x": 74,
+        "y": 699,
+        "w": 852,
+        "h": 82
+    },
+    {
+        "id": "4ba10ca2f909b10b",
+        "type": "group",
+        "z": "78f04c1128a4100f",
+        "name": "Tampilkan Data ke Dashboard",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "d0fe0f29b216778b",
+            "6594cc0b71735e9d",
+            "30397002da674aae",
+            "4b0bcdb747c158f2",
+            "043e0b845b7df3ad"
+        ],
+        "x": 334,
+        "y": 139,
+        "w": 572,
+        "h": 222
+    },
+    {
+        "id": "e4552ffc63cc8271",
+        "type": "mqtt in",
+        "z": "78f04c1128a4100f",
+        "name": "SUBSCRIBE",
+        "topic": "edutic/dht",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "d62250f3ae4c7da0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "e4490a2d78dd322c",
+                "d0fe0f29b216778b"
+            ]
+        ]
+    },
+    {
+        "id": "e4490a2d78dd322c",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "40836f6546617f82",
+        "name": "SAVE TO DATABASE",
+        "func": "var temperature = msg.payload.temperature;\nvar humidity = msg.payload.humidity;\nvar unixtime = parseInt(((Date.now()/1000).toFixed(10)));\n\nmsg.topic = \"INSERT INTO sensor(temperature,humidity,unixtime) VALUES(\"+temperature+\",\"+humidity+\",\"+unixtime+\")\";\nmsg.payload = {\n    temperature : temperature,\n    humidity : humidity\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 60,
+        "wires": [
+            [
+                "bc263a9d365765fb"
+            ]
+        ]
+    },
+    {
+        "id": "c681dfee683963ac",
+        "type": "mysql",
+        "z": "78f04c1128a4100f",
+        "g": "40836f6546617f82",
+        "mydb": "1ade48da4f619fb6",
+        "name": "",
+        "x": 830,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "81c40225139934ae",
+        "type": "mysql",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "mydb": "1ade48da4f619fb6",
+        "name": "",
+        "x": 570,
+        "y": 620,
+        "wires": [
+            [
+                "ef8d591e536f6f75"
+            ]
+        ]
+    },
+    {
+        "id": "ed449970653dd819",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "e60475206a7c8a84",
+        "name": "DELETE DATABASE",
+        "func": "msg.topic = \"DELETE FROM sensor\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 740,
+        "wires": [
+            [
+                "cd05144cfc9eba99"
+            ]
+        ]
+    },
+    {
+        "id": "cd05144cfc9eba99",
+        "type": "mysql",
+        "z": "78f04c1128a4100f",
+        "g": "e60475206a7c8a84",
+        "mydb": "1ade48da4f619fb6",
+        "name": "",
+        "x": 630,
+        "y": 740,
+        "wires": [
+            [
+                "9bf38d8462aab94b"
+            ]
+        ]
+    },
+    {
+        "id": "6813becc9e0d8ec1",
+        "type": "ui_table",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "group": "7e4ca4b84762c487",
+        "name": "",
+        "order": 8,
+        "width": 12,
+        "height": 9,
+        "columns": [
+            {
+                "field": "number",
+                "title": "No.",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "unixtime",
+                "title": "Time",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "temperature",
+                "title": "Temperature",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "humidity",
+                "title": "Humidity",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 930,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "9bf38d8462aab94b",
+        "type": "debug",
+        "z": "78f04c1128a4100f",
+        "g": "e60475206a7c8a84",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "7d2a5a9b8b1ce378",
+        "type": "ui_date_picker",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "",
+        "label": "Tanggal",
+        "group": "7e4ca4b84762c487",
+        "order": 1,
+        "width": 9,
+        "height": 1,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 160,
+        "y": 480,
+        "wires": [
+            [
+                "e9f81cf86ae13e54"
+            ]
+        ]
+    },
+    {
+        "id": "0731f89226b0feb7",
+        "type": "ui_button",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "",
+        "group": "7e4ca4b84762c487",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "SUBMIT",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 160,
+        "y": 620,
+        "wires": [
+            [
+                "b44068ca67893d02"
+            ]
+        ]
+    },
+    {
+        "id": "e9f81cf86ae13e54",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "INPUT TANGGAL",
+        "func": "var waktu_WIB = 7 * 60 * 60;\nvar tanggal = parseInt(msg.payload/1000) - waktu_WIB;\n\nflow.set('tanggal', tanggal);\n\nmsg.payload = tanggal;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "df41d33c64d8a964",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "INPUT WAKTU AWAL",
+        "func": "var waktu_awal = parseInt(msg.payload / 1000);\nflow.set('waktu_awal', waktu_awal);\nmsg.payload = waktu_awal;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "73acbbe2699ca38a",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "INPUT WAKTU AKHIR",
+        "func": "var waktu_akhir = parseInt(msg.payload/1000);\nflow.set('waktu_akhir', waktu_akhir);\nmsg.payload = waktu_akhir;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b44068ca67893d02",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "DATABASE QUERY",
+        "func": "var tanggal = flow.get('tanggal');\nvar waktu_awal = flow.get('waktu_awal');\nvar waktu_akhir = flow.get('waktu_akhir');\n\nvar start = tanggal+waktu_awal;\nvar end = tanggal+waktu_akhir;\n\nmsg.topic = \"SELECT * FROM sensor WHERE unixtime BETWEEN \"+start+\" AND \"+end+\";\";\nmsg.payload = [tanggal,waktu_awal,waktu_akhir,start, end];\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 620,
+        "wires": [
+            [
+                "81c40225139934ae",
+                "a4e69ed96d6da2d6"
+            ]
+        ]
+    },
+    {
+        "id": "d0fe0f29b216778b",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "4ba10ca2f909b10b",
+        "name": "Parsing data",
+        "func": "var temperature = msg.payload.temperature;\nvar humidity = msg.payload.humidity;\n\n\nreturn [\n    {payload : temperature},\n    {payload : humidity}\n];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 220,
+        "wires": [
+            [
+                "043e0b845b7df3ad",
+                "6594cc0b71735e9d"
+            ],
+            [
+                "4b0bcdb747c158f2",
+                "30397002da674aae"
+            ]
+        ]
+    },
+    {
+        "id": "6594cc0b71735e9d",
+        "type": "ui_chart",
+        "z": "78f04c1128a4100f",
+        "g": "4ba10ca2f909b10b",
+        "name": "",
+        "group": "d6ce21bc59035408",
+        "order": 1,
+        "width": 12,
+        "height": 4,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "20",
+        "ymax": "40",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 790,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "30397002da674aae",
+        "type": "ui_chart",
+        "z": "78f04c1128a4100f",
+        "g": "4ba10ca2f909b10b",
+        "name": "",
+        "group": "d6ce21bc59035408",
+        "order": 2,
+        "width": 12,
+        "height": 4,
+        "label": "Humidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "20",
+        "ymax": "85",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 780,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4b0bcdb747c158f2",
+        "type": "ui_gauge",
+        "z": "78f04c1128a4100f",
+        "g": "4ba10ca2f909b10b",
+        "name": "",
+        "group": "3250b3d94e1fa8e6",
+        "order": 2,
+        "width": 6,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "",
+        "format": "{{value}}",
+        "min": "30",
+        "max": "85",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 800,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "043e0b845b7df3ad",
+        "type": "ui_gauge",
+        "z": "78f04c1128a4100f",
+        "g": "4ba10ca2f909b10b",
+        "name": "",
+        "group": "3250b3d94e1fa8e6",
+        "order": 1,
+        "width": 6,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "",
+        "format": "{{value}}",
+        "min": "20",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 810,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "9153142b40625994",
+        "type": "ui_text_input",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "",
+        "label": "Dari",
+        "tooltip": "",
+        "group": "7e4ca4b84762c487",
+        "order": 3,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "mode": "time",
+        "delay": "1",
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 150,
+        "y": 520,
+        "wires": [
+            [
+                "df41d33c64d8a964"
+            ]
+        ]
+    },
+    {
+        "id": "18b09637292ae514",
+        "type": "ui_text_input",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "",
+        "label": "Sampai",
+        "tooltip": "",
+        "group": "7e4ca4b84762c487",
+        "order": 4,
+        "width": 4,
+        "height": 1,
+        "passthru": true,
+        "mode": "time",
+        "delay": "1",
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 160,
+        "y": 560,
+        "wires": [
+            [
+                "73acbbe2699ca38a"
+            ]
+        ]
+    },
+    {
+        "id": "ef8d591e536f6f75",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "SET PARAMETER",
+        "func": "let array = msg.payload;\n\n\narray.forEach((data, index) => {\n    const date = new Date(data.unixtime * 1000);\n    data.unixtime = date.toLocaleString('es-US',{\n        timeZone: \"Asia/Jakarta\",\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n        hour12: false\n    });\n\n    data.temperature = data.temperature + \" °C\";\n    data.humidity = data.humidity + \" %\";\n    data.number = index + 1;\n\n});\n\n\nmsg.payload = array;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 620,
+        "wires": [
+            [
+                "6813becc9e0d8ec1"
+            ]
+        ]
+    },
+    {
+        "id": "e59de277e2f488a3",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "name": "QUERY SELECT",
+        "func": "var tanggal = flow.get('tanggal');\nvar waktu_awal = flow.get('waktu_awal');\nvar waktu_akhir = flow.get('waktu_akhir');\n\nvar start = tanggal + waktu_awal;\nvar end = tanggal + waktu_akhir;\n\nmsg.topic = \"SELECT * FROM sensor WHERE unixtime BETWEEN \" + start + \" AND \" + end + \";\";\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 880,
+        "wires": [
+            [
+                "778e1dc08be9e496"
+            ]
+        ]
+    },
+    {
+        "id": "6754fdfc83ccf7d5",
+        "type": "file",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 520,
+        "y": 980,
+        "wires": [
+            [
+                "e8f4f3e2c9a94c78"
+            ]
+        ]
+    },
+    {
+        "id": "270b96a238394039",
+        "type": "function",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "name": "prepare data to csv",
+        "func": "var data = msg.payload.reverse();\nvar time = [];\nvar temperature = [];\nvar humidity = [];\n\nfor(var i=0;i<msg.payload.length;i++){\n    \n    time[i] =  new Date(msg.payload[i].unixtime*1000).toLocaleString('en-US',{\n                    timeZone: \"Asia/Jakarta\",\n                    hour: \"2-digit\",\n                    minute: \"2-digit\",\n                    hour12: false\n                });\n                \n    temperature[i] = msg.payload[i].temperature;\n    humidity[i] = msg.payload[i].humidity;\n}\n\n\n//header CSV\n\nvar csv = \"REPORT MONITORING DHT11 \" + new Date().toLocaleDateString().replace(/\\//g, '-')+\"\\n\";\n    csv += \"time,temperature,humidity\\n\";\n\nfor(var j=msg.payload.length-1; j>=0; j--){\n    csv += time[j] + \",\"+temperature[j]+\",\"+humidity[j]+\"\\n\";\n}\n\nmsg.payload = csv;\n\n//directory file dan penamaan file\nvar basePath = \"C:/Users/lukma/.node-red/datalog/\";\nvar fileName = \"data_export\"+ new Date().toLocaleString().replace(/\\//g, '-') +\".csv\";\nmsg.filename = basePath + fileName;\nflow.set('fileLocation', basePath + fileName);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 980,
+        "wires": [
+            [
+                "6754fdfc83ccf7d5"
+            ]
+        ]
+    },
+    {
+        "id": "db3b739ff69854bd",
+        "type": "ui_button",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "name": "",
+        "group": "7e4ca4b84762c487",
+        "order": 5,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Download CSV",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "green",
+        "className": "",
+        "icon": "fa-download",
+        "payload": "file",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 180,
+        "y": 880,
+        "wires": [
+            [
+                "e59de277e2f488a3"
+            ]
+        ]
+    },
+    {
+        "id": "778e1dc08be9e496",
+        "type": "mysql",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "mydb": "1ade48da4f619fb6",
+        "name": "",
+        "x": 570,
+        "y": 880,
+        "wires": [
+            [
+                "270b96a238394039"
+            ]
+        ]
+    },
+    {
+        "id": "bc263a9d365765fb",
+        "type": "delay",
+        "z": "78f04c1128a4100f",
+        "g": "40836f6546617f82",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 670,
+        "y": 60,
+        "wires": [
+            [
+                "c681dfee683963ac"
+            ]
+        ]
+    },
+    {
+        "id": "50403f5c993954e2",
+        "type": "ui_button",
+        "z": "78f04c1128a4100f",
+        "g": "e60475206a7c8a84",
+        "name": "",
+        "group": "7e4ca4b84762c487",
+        "order": 7,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "DELETE DATA",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "red",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 180,
+        "y": 740,
+        "wires": [
+            [
+                "ed449970653dd819"
+            ]
+        ]
+    },
+    {
+        "id": "a4e69ed96d6da2d6",
+        "type": "debug",
+        "z": "78f04c1128a4100f",
+        "g": "5d020af5e95b2f0f",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "807cb2c79a23c984",
+        "type": "ui_toast",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "position": "top right",
+        "displayTime": "",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 910,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "e8f4f3e2c9a94c78",
+        "type": "change",
+        "z": "78f04c1128a4100f",
+        "g": "196081f0352f3af0",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Successfully!",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "timeout",
+                "pt": "msg",
+                "to": "7",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Data saved to C:/Users/edutic.id/.node-red/datalog/",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 980,
+        "wires": [
+            [
+                "807cb2c79a23c984"
+            ]
+        ]
+    },
+    {
+        "id": "9a29e3cf35948a33",
+        "type": "ui_spacer",
+        "z": "78f04c1128a4100f",
+        "name": "spacer",
+        "group": "7e4ca4b84762c487",
+        "order": 6,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "d62250f3ae4c7da0",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1ade48da4f619fb6",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "edutic",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "7e4ca4b84762c487",
+        "type": "ui_group",
+        "name": "TABLE",
+        "tab": "23ce40b25f59cdd3",
+        "order": 2,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d6ce21bc59035408",
+        "type": "ui_group",
+        "name": "CHART",
+        "tab": "23ce40b25f59cdd3",
+        "order": 3,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3250b3d94e1fa8e6",
+        "type": "ui_group",
+        "name": "GAUGE",
+        "tab": "23ce40b25f59cdd3",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "23ce40b25f59cdd3",
+        "type": "ui_tab",
+        "name": "Temperature Monitoring",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f9cbda17133e4b76",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-mysql": "3.0.3",
+            "node-red-node-ui-table": "0.4.5",
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]
